@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Trends</title>
+    <script>
+        async function runScript() {
+            try {
+                const response = await fetch('/run_script');
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('result').innerHTML = `
+                        <h3>These are the most happening topics as on ${data.date}</h3>
+                        <ul>
+                            ${data.topics.map(topic => `<li>${topic}</li>`).join('')}
+                        </ul>
+                        <p>The IP address used for this query was ${data.ip}.</p>
+                        <h4>Here's a JSON extract of this record from MongoDB:</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                        <button onclick="runScript()">Click here to run the query again</button>
+                    `;
+                } else {
+                    document.getElementById('result').innerHTML = `<p>Error: ${data.error}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<p>An error occurred: ${error.message}</p>`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Twitter Trending Topics</h1>
+    <button onclick="runScript()">Click here to run the script</button>
+    <div id="result"></div>
+</body>
+</html>
